@@ -370,6 +370,13 @@ Acceptance criteria:
 - Accepting or overriding a recommendation requires justification.
 - Final decisions record the reviewer and timestamp.
 
+Optional enhancement — F13 (Should):
+
+- Reviewers can filter applications awaiting review and applications
+  with failed document processing.
+- Clearing a filter restores the full authorized application list.
+- Filters never reveal applications the reviewer cannot access.
+
 ### US09 — Ask Questions with Source Citations
 
 As a reviewer, I want to ask questions about an application,
