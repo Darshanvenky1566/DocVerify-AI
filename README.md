@@ -38,3 +38,18 @@ Implementation has not started.
 
 Only synthetic or anonymized test documents will be used.
 API keys and secrets must never be committed to this repository.
+
+## Project Management
+
+- [GitHub Repository](https://github.com/Darshanvenky1566/DocVerify-AI)
+- [Product Backlog](https://github.com/users/Darshanvenky1566/projects/1/views/2)
+
+The backlog contains user stories with acceptance criteria and
+MoSCoW priorities. Implementation has not started, so the stories
+remain in Todo.
+
+US01–US12 are Must priorities. US13 is optional (Could).
+US14 is excluded from this release (Won't).
+
+Future changes will use feature branches and pull requests.
+Pull-request review and approval must follow the assignment requirements.
