@@ -30,3 +30,19 @@ local-data/
 
 # Logs
 *.log
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Frontend
+node_modules/
+dist/
