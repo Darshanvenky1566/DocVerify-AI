@@ -4,7 +4,17 @@ from app.applications import router as applications_router
 from app.auth import router as auth_router
 from app.documents import router as documents_router
 from app.reviews import router as reviews_router
-app = FastAPI(title="DocVerify AI API", version="0.1.0")
+from contextlib import asynccontextmanager
+from app.database import Base, engine
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    yield
+
+
+app = FastAPI(title="DocVerify AI API", version="0.1.0", lifespan=lifespan)
 
 app.include_router(auth_router)
 app.include_router(applications_router)
