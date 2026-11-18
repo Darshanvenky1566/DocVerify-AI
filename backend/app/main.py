@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-
+from fastapi.responses import RedirectResponse
 from app.applications import router as applications_router
 from app.auth import router as auth_router
 from app.documents import router as documents_router
@@ -14,3 +14,8 @@ app.include_router(documents_router)
 @app.get("/health")
 def health_check():
     return {"status": "ok", "service": "DocVerify AI"}
+
+
+@app.get("/", include_in_schema=False)
+def open_docs():
+    return RedirectResponse(url="/docs")

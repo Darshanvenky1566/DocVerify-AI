@@ -81,3 +81,28 @@ def upload_document(
     db.commit()
     db.refresh(document)
     return document
+
+@router.get(
+    "/{application_id}/documents",
+    response_model=list[DocumentResponse],
+)
+def list_documents(
+    application_id: int,
+    applicant: User = Depends(get_applicant),
+    db: Session = Depends(get_db),
+):
+    application = db.scalar(
+        select(Application).where(
+            Application.id == application_id,
+            Application.applicant_id == applicant.id,
+        )
+    )
+    if application is None:
+        raise HTTPException(status_code=404, detail="Application not found.")
+
+    query = (
+        select(Document)
+        .where(Document.application_id == application.id)
+        .order_by(Document.id)
+    )
+    return db.scalars(query).all()
