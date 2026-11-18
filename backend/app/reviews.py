@@ -11,6 +11,8 @@ from app.auth import get_active_session, unauthorized
 from app.database import get_db
 from app.models import LoginSession, User
 from app.review_model import ReviewDecision
+from app.document_model import Document
+from app.documents import DocumentResponse
 
 router = APIRouter(prefix="/reviews", tags=["Reviews"])
 
@@ -79,3 +81,24 @@ def decide_application(
     db.commit()
     db.refresh(application)
     return application
+
+
+@router.get(
+    "/{application_id}/documents",
+    response_model=list[DocumentResponse],
+)
+def list_review_documents(
+    application_id: int,
+    reviewer: User = Depends(get_reviewer),
+    db: Session = Depends(get_db),
+):
+    application = db.get(Application, application_id)
+    if application is None or application.status != "submitted":
+        raise HTTPException(status_code=404, detail="Application not found.")
+
+    query = (
+        select(Document)
+        .where(Document.application_id == application.id)
+        .order_by(Document.id)
+    )
+    return db.scalars(query).all()
