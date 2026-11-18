@@ -1,6 +1,8 @@
 from typing import Literal
+from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -102,3 +104,39 @@ def list_review_documents(
         .order_by(Document.id)
     )
     return db.scalars(query).all()
+
+
+@router.get("/{application_id}/documents/{document_id}/download")
+def download_review_document(
+    application_id: int,
+    document_id: int,
+    reviewer: User = Depends(get_reviewer),
+    db: Session = Depends(get_db),
+):
+    document = db.scalar(
+        select(Document)
+        .join(Application, Application.id == Document.application_id)
+        .where(
+            Document.id == document_id,
+            Application.id == application_id,
+            Application.status == "submitted",
+        )
+    )
+    if document is None:
+        raise HTTPException(status_code=404, detail="Document not found.")
+
+    filename = quote(document.filename, safe="")
+    fallback = "".join(
+        char if char.isascii() and (char.isalnum() or char in "._-") else "_"
+        for char in document.filename
+    )
+    return Response(
+        content=document.content,
+        media_type=document.content_type,
+        headers={
+            "Content-Disposition": (
+                f'attachment; filename="{fallback}"; '
+                f"filename*=UTF-8''{filename}"
+            )
+        },
+    )
