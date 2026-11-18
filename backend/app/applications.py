@@ -72,3 +72,44 @@ def list_applications(
         .order_by(Application.id.desc())
     )
     return db.scalars(query).all()
+
+
+@router.post(
+    "/{application_id}/submit",
+    response_model=ApplicationResponse,
+)
+def submit_application(
+    application_id: int,
+    applicant: User = Depends(get_applicant),
+    db: Session = Depends(get_db),
+):
+    from app.document_model import Document
+
+    application = db.scalar(
+        select(Application)
+        .where(
+            Application.id == application_id,
+            Application.applicant_id == applicant.id,
+        )
+        .with_for_update()
+    )
+    if application is None:
+        raise HTTPException(status_code=404, detail="Application not found.")
+    if application.status != "draft":
+        raise HTTPException(status_code=409, detail="Only drafts can be submitted.")
+
+    document_id = db.scalar(
+        select(Document.id)
+        .where(Document.application_id == application.id)
+        .limit(1)
+    )
+    if document_id is None:
+        raise HTTPException(
+            status_code=409,
+            detail="Upload at least one document before submitting.",
+        )
+
+    application.status = "submitted"
+    db.commit()
+    db.refresh(application)
+    return application
