@@ -122,3 +122,20 @@ def logout(
     db.delete(login_session)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@router.get("/admin/users", response_model=list[UserResponse])
+def list_users(
+    login_session: LoginSession = Depends(get_active_session),
+    db: Session = Depends(get_db),
+):
+    current_user = db.get(User, login_session.user_id)
+    if current_user is None:
+        raise unauthorized("Your session is invalid or expired.")
+
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Administrator access required.",
+        )
+
+    return db.scalars(select(User).order_by(User.id).limit(100)).all()
