@@ -1,11 +1,13 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+
 from app.applications import router as applications_router
 from app.auth import router as auth_router
+from app.database import Base, engine
 from app.documents import router as documents_router
 from app.reviews import router as reviews_router
-from contextlib import asynccontextmanager
-from app.database import Base, engine
 
 
 @asynccontextmanager

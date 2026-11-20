@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: backend
+      POSTGRES_PASSWORD: ci-test-password
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: python -m pip install -r backend/requirements-dev.txt
+
+      - name: Lint Python
+        run: python -m ruff check backend/app backend/tests
+
+      - name: Run automated tests
+        run: python -m pytest backend/tests -q
+
+      - name: Validate Compose configuration
+        run: docker compose config --quiet
+
+      - name: Build backend and frontend images
+        run: docker compose build

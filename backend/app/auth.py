@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from hashlib import sha256
 from secrets import token_urlsafe
 
@@ -42,7 +42,7 @@ def get_active_session(
     login_session = db.scalar(
         select(LoginSession).where(
             LoginSession.token_hash == hash_token(credentials.credentials),
-            LoginSession.expires_at > datetime.now(timezone.utc),
+            LoginSession.expires_at > datetime.now(UTC),
         )
     )
     if login_session is None:
@@ -93,7 +93,7 @@ def login(data: UserLogin, response: Response, db: Session = Depends(get_db)):
         LoginSession(
             user_id=user.id,
             token_hash=hash_token(token),
-            expires_at=datetime.now(timezone.utc)
+            expires_at=datetime.now(UTC)
             + timedelta(seconds=session_seconds),
         )
     )
