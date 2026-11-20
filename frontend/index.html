@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Review Queue | DocVerify AI</title>
+    <script src="./app.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>DocVerify AI</h1>
+  </header>
+
+  <main>
+    <section aria-labelledby="sign-in-heading">
+      <h2 id="sign-in-heading">Reviewer sign-in</h2>
+      <form id="login-form">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="username" required>
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password"
+               autocomplete="current-password" required>
+
+        <button type="submit" disabled>Sign in</button>
+      </form>
+    </section>
+
+    <p id="status" role="status"></p>
+
+    <section id="review-dashboard" aria-labelledby="queue-heading" hidden>
+      <h2 id="queue-heading">Review queue</h2>
+      <button id="logout" type="button">Sign out</button>
+      <ul id="review-queue"></ul>
+    </section>
+  </main>
+</body>
+</html>
