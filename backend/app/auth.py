@@ -11,7 +11,13 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import LoginSession, User
-from app.schemas import TokenResponse, UserLogin, UserRegister, UserResponse
+from app.schemas import (
+    TokenResponse,
+    UserLogin,
+    UserRegister,
+    UserResponse,
+    UserRoleUpdate,
+)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 password_hasher = PasswordHash.recommended()
@@ -139,3 +145,32 @@ def list_users(
         )
 
     return db.scalars(select(User).order_by(User.id).limit(100)).all()
+
+@router.patch("/admin/users/{user_id}/role", response_model=UserResponse)
+def update_user_role(
+    user_id: int,
+    data: UserRoleUpdate,
+    login_session: LoginSession = Depends(get_active_session),
+    db: Session = Depends(get_db),
+):
+    current_user = db.get(User, login_session.user_id)
+    if current_user is None:
+        raise unauthorized("Your session is invalid or expired.")
+
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Administrator access required.",
+        )
+
+    target_user = db.get(User, user_id)
+    if target_user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found.",
+        )
+
+    target_user.role = data.role
+    db.commit()
+    db.refresh(target_user)
+    return target_user
