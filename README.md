@@ -1,6 +1,7 @@
 # DocVerify AI
 
 AI-Powered Document Verification System
+[![CI](https://github.com/Darshanvenky1566/DocVerify-AI/actions/workflows/ci.yml/badge.svg)](https://github.com/Darshanvenky1566/DocVerify-AI/actions/workflows/ci.yml)
 
 ## Project Information
 
