@@ -17,6 +17,12 @@ class Document(Base):
     )
     filename: Mapped[str] = mapped_column(String(255))
     content_type: Mapped[str] = mapped_column(String(100))
+    document_type: Mapped[str] = mapped_column(
+        String(50), default="supporting", server_default="supporting"
+    )
+    notes: Mapped[str] = mapped_column(
+        String(2000), default="", server_default=""
+    )
     content: Mapped[bytes] = mapped_column(LargeBinary, deferred=True)
     uploaded_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
