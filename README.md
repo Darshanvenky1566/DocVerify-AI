@@ -130,3 +130,19 @@ docker compose down
 ```
 
 Named Docker volumes retain the database and vector database data between restarts.
+
+## Administrator role management
+
+After creating the first administrator using the setup instructions,
+sign in through Swagger UI and authorize with the administrator token.
+
+Use `PATCH /auth/admin/users/{user_id}/role` with:
+
+```json
+{"role": "reviewer"}
+
+```
+
+Supported roles are `applicant`, `reviewer`, and `admin`.
+Unauthenticated requests return 401, non-admin requests return 403,
+and unsupported roles return 422.

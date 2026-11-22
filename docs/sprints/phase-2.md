@@ -63,14 +63,23 @@ The CI workflow runs on pushes and pull requests. It performs Python linting, au
 
 The main branch protection was configured to require pull requests, the checks CI job, and an up-to-date branch before merging. Required external approvals were disabled for this individual project.
 
-## Review and remaining hand-in work
+## Review and submission status
 
-- Link the implementation pull request to the relevant backlog issues and GitHub Project.
-- Verify the documented setup from a fresh checkout.
-- Review and merge the implementation through a pull request.
+- PR #16 references backlog issues #1, #2, #3, #4, and #8 and is linked
+  to DocVerify AI — Product Backlog.
+- Fresh-checkout verification passed: all four services started with new
+  volumes, the frontend API proxy responded, and five database tables existed.
+- Commit a343a91 added administrator-only role assignment.
+- Manual API checks passed for administrator role changes, rejection of
+  unauthenticated and applicant role changes, invalid-role validation,
+  and denial of access after logout. Temporary test accounts were removed.
+- Python linting and the six existing automated API tests passed locally.
+
+Remaining:
+- Complete backlog acceptance checks and update project statuses.
+- Confirm the latest PR checks pass, review and merge PR #16.
 - Confirm successful CI on main.
-- Update the GitHub Project to reflect verified delivery.
-- Submit the repository link and Phase 2 documentation through Teams.
+- Submit the repository and documentation links through Teams.
 
 ## Retrospective
 
