@@ -146,3 +146,34 @@ Use `PATCH /auth/admin/users/{user_id}/role` with:
 Supported roles are `applicant`, `reviewer`, and `admin`.
 Unauthenticated requests return 401, non-admin requests return 403,
 and unsupported roles return 422.
+## Document uploads and checklist
+
+In Swagger UI, applicants can upload PDF, PNG, JPG, or JPEG files,
+one file per request, repeating the request for multiple documents.
+Each file may be up to 10 MiB.
+
+The upload form accepts a document type (`supporting`, `identity`, or
+`qualification`) and optional notes of up to 2,000 characters.
+File signatures and parser checks reject unsupported or unreadable files.
+
+Use `GET /applications/{application_id}/document-checklist` to view
+the current requirement: at least one accepted document.
+The checklist includes uploaded document IDs and submission readiness.
+
+### Updating an existing Phase 2 database
+
+Fresh databases receive these columns automatically. For an existing
+database created before document metadata was added, run:
+
+```bash
+docker compose exec -T db psql -U docverify -d docverify <<'SQL'
+ALTER TABLE documents
+ADD COLUMN IF NOT EXISTS document_type VARCHAR(50) NOT NULL DEFAULT 'supporting';
+ALTER TABLE documents
+ADD COLUMN IF NOT EXISTS notes VARCHAR(2000) NOT NULL DEFAULT '';
+SQL
+docker compose up -d --build backend
+```
+
+Existing documents are preserved and receive the type `supporting`
+and empty notes.

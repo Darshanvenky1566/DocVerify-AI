@@ -88,3 +88,19 @@ Small changes followed by verification helped identify indentation and authoriza
 A downloaded PNG initially received an incorrect extension through Swagger. Direct API downloads and downloads through the reviewer dashboard opened successfully.
 
 Future work includes the OCR, language model, and retrieval workflow planned for later phases.
+## Upload acceptance verification — 22 November 2026
+
+Commit 03cb154 adds document types, optional notes, a document checklist,
+and parser validation using Pillow and pypdf.
+
+Local API checks passed for:
+- An incomplete checklist before uploading documents.
+- Valid PNG, JPG, and PDF uploads with document types and notes.
+- Rejection of empty, unsupported, mismatched, damaged, and oversized files.
+- Unique document IDs and a completed checklist after successful uploads.
+- Rejected files not being stored.
+
+These checks used a synthetic applicant and application.
+The six existing automated API tests also passed locally.
+The current checklist requires at least one accepted document;
+document-specific requirements remain future work.
